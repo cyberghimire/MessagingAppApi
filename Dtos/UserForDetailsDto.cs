@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using MessagingApp.API.Models;
+
+namespace MessagingApp.API.Dtos
+{
+    public class UserForDetailsDto
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+
+        public string Gender { get; set; }
+
+        public string Age { get; set; }
+
+        public string KnownAs { get; set; }
+
+        public DateTime Created { get; set; }
+
+        public DateTime LastActive { get; set; }
+
+        public string Introduction { get; set; }
+
+        public string LookinFor { get; set; }
+
+        public string Interests { get; set; }
+
+        public string City { get; set; }
+
+        public string Country { get; set; }
+        public string PhotoUrl { get; set; }
+
+        public ICollection<PhotosForDetailsDto> Photos { get; set; }
+    }
+}
