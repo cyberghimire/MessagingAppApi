@@ -17,6 +17,7 @@ namespace MessagingApp.API.Helpers
                 opt.ResolveUsing(d => d.DateOfBirth.CalculateAge());
             }
             );
+
             CreateMap<User, UserForDetailsDto>()
              .ForMember(dest => dest.PhotoUrl, opt => {
                  opt.MapFrom(src => src.Photos.FirstOrDefault(photo => photo.IsMain).Url);
@@ -25,7 +26,17 @@ namespace MessagingApp.API.Helpers
                 opt.ResolveUsing(d => d.DateOfBirth.CalculateAge());
             }
             );
+
             CreateMap<Photo,PhotosForDetailsDto>(); 
+            
+            CreateMap<UserForUpdateDto, User>();
+
+            CreateMap<Photo, PhotoForReturnDto>();
+
+            CreateMap<PhotoForCreationDto, Photo>();
+
+            CreateMap<MessageForCreationDto, Message>().ReverseMap();
+
         }
     }
 }

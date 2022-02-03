@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MessagingApp.API.Helpers;
 using MessagingApp.API.Models;
 
 namespace MessagingApp.API.Data
@@ -10,9 +11,18 @@ namespace MessagingApp.API.Data
         void Delete<T>(T entity) where T: class;
 
         Task<bool> SaveAll();
-        Task<IEnumerable<User>> GetUsers();
+        Task<PagedList<User>> GetUsers(UserParams userParams);
         Task<User> GetUser(int id);
 
+        Task<Photo> GetPhoto(int id);
+
+        Task<Photo> GetMainPhotoForUser(int userId);
+
+        Task<Message> GetMessage(int id);
+
+        Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
+
+        Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
         
     }
 }

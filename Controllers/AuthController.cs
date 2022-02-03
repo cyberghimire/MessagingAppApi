@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MessagingApp.API.Data;
 using MessagingApp.API.Dtos;
 using MessagingApp.API.Models;
@@ -18,39 +19,43 @@ namespace MessagingApp.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthRepository repo, IConfiguration config )
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
             _config = config;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto){
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
+        {
             //validate request
 
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
-            if(await _repo.UserExists(userForRegisterDto.Username))
+            if (await _repo.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username already exists.");
-            
-            var userToCreate = new User{
-                
+
+            var userToCreate = new User
+            {
+
                 Username = userForRegisterDto.Username
-                
+
             };
 
             var createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
 
-            return StatusCode(201);  
+            return StatusCode(201);
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
             var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.Password);
 
-            if(userFromRepo == null)
+            if (userFromRepo == null)
                 return Unauthorized();
 
             //Next, we are going to build up a token that we're then going to return to our user. Our token is going to contain two bits of information about the user. It's going to contain the user's id and the user's username. 
@@ -63,13 +68,14 @@ namespace MessagingApp.API.Controllers
 
             //What We also need in our token is a key to sign our token. This part's going to be hashed, so it's not going to be readable inside our token itself.
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));        //We need to encode the key into a byte-array because that's what the function SymmetricSecurityKey takes as argument. The "Token" key is the value of "Token" feild in appsettings.json file, the implementation of which is in the _config variable. 
-            
+
 
             //Now that we have our key, we create our signing credentials. 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);        
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             //next, we create a security token descriptor, which is going to contain our claims, expiry date and our signing credentials. 
-            var tokenDescriptor = new SecurityTokenDescriptor{
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
@@ -80,8 +86,13 @@ namespace MessagingApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);      //this token will contain the JWT token that we want to return to our client. 
 
-            return Ok(new {
-                    token = tokenHandler.WriteToken(token)
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
+
+            return Ok(new
+            {
+                token = tokenHandler.WriteToken(token),
+                user = user
             });
 
             //The key thing to note here is that, Without specifying the signature, we're able to see what's inside our token. So, we would want to be slightly careful about what we put inside our token.

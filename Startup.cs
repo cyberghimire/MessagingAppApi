@@ -43,10 +43,13 @@ namespace MessagingApp.API
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IMessagingRepository, MessagingRepository>();
             services.AddTransient<Seed>();
-            services.AddAutoMapper();
+            services.AddAutoMapper(cfg => cfg.ValidateInlineMaps = false );
+            services.AddScoped<LogUserActivity>();
+
             //Adding the authentication scheme.
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => {
@@ -82,10 +85,11 @@ namespace MessagingApp.API
 
             // seeder.SeedUsers();
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseCors(configurePolicy=> configurePolicy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();

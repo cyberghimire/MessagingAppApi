@@ -24,7 +24,7 @@ namespace MessagingApp.API.Models
 
         public string Introduction { get; set; }
 
-        public string LookinFor { get; set; }
+        public string LookingFor { get; set; }
 
         public string Interests { get; set; }
 
@@ -33,6 +33,10 @@ namespace MessagingApp.API.Models
         public string Country { get; set; }
 
         public ICollection<Photo> Photos { get; set; }
+
+        public ICollection<Message> MessagesSent { get; set; }
+
+        public ICollection<Message> MessagesRecieved { get; set; }
     
     }
 }

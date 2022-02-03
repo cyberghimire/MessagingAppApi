@@ -12,7 +12,7 @@ namespace MessagingApp.API.Data
         public AuthRepository(DataContext context) => _context = context;
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var user = await _context.Users.Include(u => u.Photos).FirstOrDefaultAsync(x => x.Username == username);
 
             if(user == null){
                 return null;
