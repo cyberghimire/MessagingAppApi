@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MessagingApp.API.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
-    [Route("api/[controller]")]
+    [Route("/api/[controller]")]
     [ApiController]
     [Authorize()]
     public class UsersController : ControllerBase
@@ -27,8 +27,7 @@ namespace MessagingApp.API.Controllers
         }
  
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetUsers(UserParams userParams)    //model binding takes care of this value in JSON format
+        public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams)    //model binding takes care of this value in JSON format
         {
             PagedList<User> users = await _messagingRepo.GetUsers(userParams);
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
