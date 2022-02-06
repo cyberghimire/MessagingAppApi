@@ -10,7 +10,12 @@
       "ProjectGuid": "d7c600ca-7b57-4df4-b16d-f08e58a86199",
       "DisplayName": "MessagingApp.API",
       "ColorIndex": 0
+    },
+    "12990301-3e72-43e5-b8d4-68ef9d7d366a": {
+      "ProjectGuid": "12990301-3e72-43e5-b8d4-68ef9d7d366a",
+      "DisplayName": "docker-compose",
+      "ColorIndex": 1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }

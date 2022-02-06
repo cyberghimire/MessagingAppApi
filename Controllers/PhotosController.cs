@@ -124,7 +124,7 @@ namespace MessagingApp.API.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{photoId}")]
         public async Task<IActionResult> DeletePhoto(int userId, int photoId)
         {
              if(userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
@@ -140,11 +140,25 @@ namespace MessagingApp.API.Controllers
             if(photoFromRepo.IsMain)
                 return BadRequest("You cannot delete your main photo.");
 
+            if(photoFromRepo.PublicId != null)
+            {
+                var deletionParams = new DeletionParams(photoFromRepo.PublicId);
+
+                var result = await _cloudinary.DestroyAsync(deletionParams);
+
+                if(result.Result == "ok"){
+                    _repo.Delete(photoFromRepo);
+            }
+            }
+
+            if(photoFromRepo.PublicId == null){
+                 _repo.Delete(photoFromRepo);
+            }            
             
-            // await _repo.DeletePhoto(photoId);
-            // if(await _repo.SaveAll()){
-            //     return NoContent();
-            // }
+
+            if(await _repo.SaveAll()){
+                return Ok();
+            }
             
             return BadRequest("Could not delete the photo.");
             

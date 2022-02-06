@@ -3,3 +3,5 @@ bin
 .vscode
 *.db
 *.sqbpro
+appsettings.json
+appsettings.Development.json

@@ -20,7 +20,11 @@ namespace MessagingApp.API
             Host.CreateDefaultBuilder(args)
                  .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    var port = Environment.GetEnvironmentVariable("PORT");
+                    webBuilder.UseStartup<Startup>()
+                    // .UseUrls("http://*:"+ port)
+                    .UseUrls("http://*:5000")
+                    ;
                 });
     }
 }
