@@ -66,33 +66,33 @@ namespace MessagingApp.API
             });
         }
 
-        //  public void ConfigureDevelopmentServices(IServiceCollection services)
-        // {
-        //     services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
+         public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
 
 
-        //     services.AddControllers()
-        //         .AddNewtonsoftJson(options =>
-        //         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-        //     services.AddCors();
-        //     services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-        //     services.AddScoped<IAuthRepository, AuthRepository>();
-        //     services.AddScoped<IMessagingRepository, MessagingRepository>();
-        //     services.AddTransient<Seed>();
-        //     services.AddAutoMapper(cfg => cfg.ValidateInlineMaps = false );
-        //     services.AddScoped<LogUserActivity>();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IMessagingRepository, MessagingRepository>();
+            services.AddTransient<Seed>();
+            services.AddAutoMapper(cfg => cfg.ValidateInlineMaps = false );
+            services.AddScoped<LogUserActivity>();
 
-        //     //Adding the authentication scheme.
-        //     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //     .AddJwtBearer(options => {
-        //         options.TokenValidationParameters = new TokenValidationParameters{
-        //             ValidateIssuerSigningKey = true,
-        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
-        //             ValidateIssuer = false,
-        //             ValidateAudience = false
-        //         };
-        //     });
-        // }
+            //Adding the authentication scheme.
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options => {
+                options.TokenValidationParameters = new TokenValidationParameters{
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+        }
 
         // // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env ,Seed seeder)
@@ -115,7 +115,7 @@ namespace MessagingApp.API
                 });
             }
 
-            seeder.SeedUsers(); 
+            // seeder.SeedUsers(); 
 
             // app.UseHttpsRedirection();
 

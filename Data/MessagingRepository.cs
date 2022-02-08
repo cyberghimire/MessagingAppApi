@@ -43,29 +43,40 @@ namespace MessagingApp.API.Data
             
             switch(messageParams.MessageContainer){
                 case "Inbox":
-                    messages = messages.Where(u=> u.RecipientId == messageParams.UserId);       //Filter out the messages out of the retrieved messages based on a condition ReciepientId == UserId i.e. filter out the messages sent to the user.
+                    messages = messages.Where(u=> u.RecipientId == messageParams.UserId 
+                    && u.RecipientDeleted == false);       //Filter out the messages out of the retrieved messages based on a condition ReciepientId == UserId i.e. filter out the messages sent to the user.
                                                                                                 
                     break;
                 
                 case "Outbox":
-                    messages = messages.Where(u=> u.SenderId == messageParams.UserId);          //Filter out the messages sent by the user based on the condition SenderId == UserId 
+                    messages = messages.Where(u=> u.SenderId == messageParams.UserId 
+                    && u.SenderDeleted == false);          //Filter out the messages sent by the user based on the condition SenderId == UserId 
                     break;
                 
                 default:
-                    messages = messages.Where(u=> u.RecipientId == messageParams.UserId && u.IsRead == false);
+                    messages = messages.Where(u=> u.RecipientId == messageParams.UserId 
+                    && u.IsRead == false && u.RecipientDeleted == false);
                     break;
             }
 
-            messages = messages.OrderByDescending(m => m.MessageSent);
+            messages = messages.OrderBy(m => m.MessageSent);
             return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
             
         }
 
-        public Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
+        public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
         {
-            throw new System.NotImplementedException();
+              var messages = await _context.Messages.Include(u => u.Sender).ThenInclude(u=> u.Photos)
+                                .Include(u => u.Recipient).ThenInclude(p => p.Photos)
+                                .Where(m => m.RecipientId == userId && m.RecipientDeleted == false 
+                                && m.SenderId == recipientId 
+                                || m.RecipientId == recipientId && m.SenderId == userId && m.SenderDeleted == false)
+                            .OrderBy(m=> m.MessageSent)
+                            .ToListAsync();
+            
+            return messages;
         }
-
+        
         public async Task<Photo> GetPhoto(int id)
         {
             var photo = await _context.Photos.FirstOrDefaultAsync(photo => photo.Id ==id);

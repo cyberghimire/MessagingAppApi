@@ -1,7 +1,7 @@
-obj
+.vs
 bin
-.vscode
+obj
+appsettings.json
 *.db
 *.sqbpro
-appsettings.json
 appsettings.Development.json
