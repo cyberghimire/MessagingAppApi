@@ -35,12 +35,15 @@ namespace MessagingApp.API.Helpers
 
             CreateMap<PhotoForCreationDto, Photo>();
 
+            CreateMap<UserForRegisterDto, User>();
+
             CreateMap<MessageForCreationDto, Message>().ReverseMap();
 
             CreateMap<Message, MessageToReturnDto>()
                 .ForMember(m=> m.SenderPhotoUrl, memberOptions => memberOptions.MapFrom(u=> u.Sender.Photos.FirstOrDefault(p=> p.IsMain).Url))
                 .ForMember(m=> m.RecipientPhotoUrl, memberOptions => memberOptions.MapFrom(u=> u.Recipient.Photos.FirstOrDefault(p=> p.IsMain).Url));
-                
+            
+
 
         }
     }

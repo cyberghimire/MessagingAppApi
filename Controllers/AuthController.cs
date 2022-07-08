@@ -38,16 +38,14 @@ namespace MessagingApp.API.Controllers
             if (await _repo.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username already exists.");
 
-            var userToCreate = new User
-            {
 
-                Username = userForRegisterDto.Username
-
-            };
+            var userToCreate = _mapper.Map<User>(userForRegisterDto);
 
             var createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
 
-            return StatusCode(201);
+            var userToReturn = _mapper.Map<UserForDetailsDto>(createdUser);
+
+            return CreatedAtRoute("GetUser", new {controller = "Users", id= createdUser.Id}, userToReturn);
         }
 
         [HttpPost("login")]
@@ -55,7 +53,7 @@ namespace MessagingApp.API.Controllers
         {
             var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.Password);
 
-            if (userFromRepo == null)
+            if (userFromRepo ==  null)
                 return Unauthorized();
 
             //Next, we are going to build up a token that we're then going to return to our user. Our token is going to contain two bits of information about the user. It's going to contain the user's id and the user's username. 

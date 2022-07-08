@@ -39,10 +39,11 @@ namespace MessagingApp.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var connectionString = Configuration.GetConnectionString("DefaultConnection"); 
-            services.AddDbContext<DataContext>(options =>
-                    options.UseMySql(connectionString,new MySqlServerVersion(new Version(5, 5, 62)), mySqlOptions => mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend)));
+            var connectionString = Configuration.GetConnectionString("SQLiteConnection"); 
+            // services.AddDbContext<DataContext>(options =>
+            //         options.UseMySql(connectionString,new MySqlServerVersion(new Version(5, 5, 62)), mySqlOptions => mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend)));
 
+            services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -130,7 +131,6 @@ namespace MessagingApp.API
             {
                 endpoints.MapControllers();
             });
-
         }
     }
 }

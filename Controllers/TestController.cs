@@ -11,5 +11,4 @@ namespace MessagingApp.API.Controllers{
             return Ok(new {name= "Aadarsha", surname= "Ghimire"});
         }
     }
-    
 }
